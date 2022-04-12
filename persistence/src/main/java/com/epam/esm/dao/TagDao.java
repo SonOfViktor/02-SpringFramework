@@ -11,5 +11,5 @@ public interface TagDao {
 
     Tag readTag(int id);
 
-    boolean deleteTag(int id);
+    int deleteTag(int id);
 }
