@@ -26,6 +26,6 @@ public class SelectParameterValidator {
     }
 
     public boolean isOrderDateValid(SelectParams params) {
-        return params.orderName() != null;
+        return params.orderDate() != null;
     }
 }

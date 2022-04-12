@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component("giftCertificateDao")
@@ -34,10 +36,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> readGiftCertificateWithParam(SelectParams selectParams ) {
+    public List<GiftCertificate> readGiftCertificateWithParam(String sql, List<String> args) {
         List<GiftCertificate> giftCertificates;
 
-        giftCertificates = jdbcTemplate.query(EXAMPLE_SQL, new BeanPropertyRowMapper<>(GiftCertificate.class), new Object[] {});
+        giftCertificates = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(GiftCertificate.class), args.toArray());
 
         return giftCertificates;
     }

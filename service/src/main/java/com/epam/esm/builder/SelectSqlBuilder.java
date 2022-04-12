@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SqlBuilder {
+public class SelectSqlBuilder {
     private static final Logger logger = LogManager.getLogger();
     private static final String BEGIN_SELECT_SQL = """
                 SELECT gift_certificate_id, gift_certificate.name, description,
@@ -35,11 +35,6 @@ public class SqlBuilder {
     private static final String ORDER_DATE = "create_date ";
     SelectParameterValidator validator;
 
-    @Autowired
-    public SqlBuilder(SelectParameterValidator validator) {
-        this.validator = validator;
-    }
-
     public String buildSelectGiftCertificateSQL(SelectParams params) {
         StringBuilder sql = new StringBuilder(BEGIN_SELECT_SQL);
 
@@ -55,6 +50,11 @@ public class SqlBuilder {
         logger.log(Level.INFO, "Sql request: \n{}", sql);
 
         return sql.toString();
+    }
+
+    @Autowired
+    public void setValidator(SelectParameterValidator validator) {
+        this.validator = validator;
     }
 
     private String appendJoinPart(StringBuilder sql, SelectParams params) {
