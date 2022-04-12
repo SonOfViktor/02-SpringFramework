@@ -8,11 +8,13 @@ import java.util.List;
 public interface GiftCertificateDao {
     int createGiftCertificate(GiftCertificate certificate);
 
+    List<GiftCertificate> readAllCertificate();
+
     List<GiftCertificate> readGiftCertificateWithParam(String sql, List<String> args);
 
     GiftCertificate readGiftCertificate(int id);
 
-    boolean updateGiftCertificate(int id);
+    int updateGiftCertificate(int id);
 
-    boolean deleteGiftCertificate(int id);
+    int deleteGiftCertificate(int id);
 }

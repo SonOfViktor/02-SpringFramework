@@ -21,14 +21,19 @@ public class SelectSqlBuilder {
                 JOIN tag ON gct_tag_id = tag_id
             """;
     private static final String WHERE_PART_PATTERN = """
-                WHERE %s%s%s
+                WHERE %s%s%s%s%s
+            """;
+    private static final String WHERE_PART_PATTERN_WITH_BRACES = """
+                WHERE %s%s(%s%s%s)
             """;
     private static final String ORDER_PART_PATTERN = """
                 ORDER BY %s%s%s
             """;
     private static final String EMPTY_LINE = "";
-    private static final String TAG_NAME = "tag.name = ?";
-    private static final String CERTIFICATE_NAME_DESCRIPTION = "gift_certificate.name LIKE ? OR description LIKE ? ";
+    private static final String TAG_NAME = "tag.name = ? ";
+    private static final String CERTIFICATE_NAME = "gift_certificate.name LIKE ? ";
+    private static final String CERTIFICATE_DESCRIPTION = "description LIKE ?";
+    private static final String OR = "OR ";
     private static final String AND = "AND ";
     private static final String COMMA = ", ";
     private static final String ORDER_NAME = "gift_certificate.name ";
@@ -38,7 +43,7 @@ public class SelectSqlBuilder {
     public String buildSelectGiftCertificateSQL(SelectParams params) {
         StringBuilder sql = new StringBuilder(BEGIN_SELECT_SQL);
 
-        if (params == null || validator.isAllFieldValid(params)) {
+        if (params == null || !validator.isAnyFieldValid(params)) {
             logger.log(Level.INFO, "Sql request: \n{}", sql);
             return sql.toString();
         }
@@ -69,12 +74,20 @@ public class SelectSqlBuilder {
     }
 
     private void appendWherePart(StringBuilder sql, SelectParams params, String tagName) {
-        String nameDescription = validator.isCertificateNameDescriptionValid(params) ?
-                                CERTIFICATE_NAME_DESCRIPTION : EMPTY_LINE;
-        String and = (!nameDescription.isEmpty() && !tagName.isEmpty()) ? AND : EMPTY_LINE;
+        String name = validator.isCertificateNameValid(params) ? CERTIFICATE_NAME : EMPTY_LINE;
+        String description = validator.isCertificateDescriptionValid(params) ? CERTIFICATE_DESCRIPTION : EMPTY_LINE;
+        String or = "";
+        String pattern = WHERE_PART_PATTERN;
 
-        if (!nameDescription.isEmpty() || !tagName.isEmpty()) {
-            String wherePart = String.format(WHERE_PART_PATTERN, nameDescription, and, tagName);
+        if(!name.isEmpty() && !description.isEmpty()) {
+            or = OR;
+            pattern = WHERE_PART_PATTERN_WITH_BRACES;
+        }
+
+        String and = (!name.isEmpty() || !description.isEmpty() && !tagName.isEmpty()) ? AND : EMPTY_LINE;
+
+        if (!name.isEmpty() || !description.isEmpty() || !tagName.isEmpty()) {
+            String wherePart = String.format(pattern, tagName, and, name, or, description);
             sql.append(wherePart);
         }
     }
