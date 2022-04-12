@@ -2,7 +2,6 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 public class GiftCertificate {
@@ -13,20 +12,18 @@ public class GiftCertificate {
     private int duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private List<Tag> tags;
 
     public GiftCertificate() {
     }
 
     public GiftCertificate(String name, String description, BigDecimal price, int duration,
-                           LocalDateTime createDate, LocalDateTime lastUpdateDate, List<Tag> tags) {
+                           LocalDateTime createDate, LocalDateTime lastUpdateDate) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.duration = duration;
         this.createDate = createDate;
         this.lastUpdateDate = lastUpdateDate;
-        this.tags = tags;
     }
 
     public int getGiftCertificateId() {
@@ -85,14 +82,6 @@ public class GiftCertificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -101,12 +90,12 @@ public class GiftCertificate {
         return giftCertificateId == that.giftCertificateId && duration == that.duration &&
                 Objects.equals(name, that.name) && Objects.equals(description, that.description) &&
                 Objects.equals(price, that.price) && Objects.equals(createDate, that.createDate) &&
-                Objects.equals(lastUpdateDate, that.lastUpdateDate) && Objects.equals(tags, that.tags);
+                Objects.equals(lastUpdateDate, that.lastUpdateDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(giftCertificateId, name, description, price, duration, createDate, lastUpdateDate, tags);
+        return Objects.hash(giftCertificateId, name, description, price, duration, createDate, lastUpdateDate);
     }
 
     @Override
