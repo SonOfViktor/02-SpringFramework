@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS `module_two`.`gift_certificate` (
 CREATE TABLE IF NOT EXISTS `module_two`.`tag` (
     `tag_id` INT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`tag_id`))
+    PRIMARY KEY (`tag_id`),
+    UNIQUE KEY `name_UNIQUE` (`name`))
     ENGINE = InnoDB;
 
 -- -----------------------------------------------------
