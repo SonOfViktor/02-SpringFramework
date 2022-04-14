@@ -1,13 +1,16 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
-
-import java.util.List;
+import java.util.Set;
 
 public interface TagDao {
     int createTag(Tag tag);
 
-    List<Tag> readAllTag();
+    int[] addTags(Set<Tag> tags);
+
+    Set<Tag> readAllTag();
+
+    Set<Tag> readAllTagByCertificateId(int certificateId);
 
     Tag readTag(int id);
 

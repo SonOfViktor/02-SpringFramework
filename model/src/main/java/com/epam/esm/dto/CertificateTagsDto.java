@@ -5,5 +5,5 @@ import com.epam.esm.entity.Tag;
 
 import java.util.Set;
 
-public record CertificateWithTags(GiftCertificate certificate, Set<Tag> tags) {
+public record CertificateTagsDto(GiftCertificate certificate, Set<Tag> tags) {
 }

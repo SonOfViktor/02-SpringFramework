@@ -3,15 +3,28 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class TagDaoImpl implements TagDao {
     private static final String INSERT_TAG_SQL = """
-            INSERT INTO tag (name) VALUES (?)
+            INSERT IGNORE INTO tag (name) VALUES (:name)
+            """;
+    private static final String READ_ALL_TAGS_BY_CERTIFICATE_ID = """
+            SELECT tag_id, tag.name FROM tag
+            JOIN gift_certificate_tag ON tag_id = gct_tag_id
+            JOIN gift_certificate ON gct_gift_certificate_id = gift_certificate_id
+            WHERE gift_certificate_id = ?
             """;
     private static final String READ_ALL_TAGS_SQL = """
             SELECT tag_id, name FROM tag
@@ -33,20 +46,46 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public int createTag(Tag tag) {
-        int affectedRow = jdbcTemplate.update(INSERT_TAG_SQL, tag.getName());
+        var source = new BeanPropertySqlParameterSource(tag);
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        KeyHolder holder = new GeneratedKeyHolder();
 
-        return affectedRow;
+        namedParameterJdbcTemplate.update(INSERT_TAG_SQL, source, holder);
+        Optional<Number> tagId = Optional.ofNullable(holder.getKey());
+
+        return tagId.orElse(0).intValue();
     }
 
     @Override
-    public List<Tag> readAllTag() {
+    public int[] addTags(Set<Tag> tags) {
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+        SqlParameterSource[] beans = tags.stream()
+                .map(BeanPropertySqlParameterSource::new)
+                .toArray(SqlParameterSource[]::new);
+
+        int[] affectedRows = namedParameterJdbcTemplate.batchUpdate(INSERT_TAG_SQL, beans);
+
+        return affectedRows;
+    }
+
+    @Override
+    public Set<Tag> readAllTag() {
         List<Tag> tags = jdbcTemplate.queryForList(READ_ALL_TAGS_SQL, Tag.class);
 
-        return tags;
+        return Set.copyOf(tags);
     }
 
     @Override
-    public Tag readTag(int id) {
+    public Set<Tag> readAllTagByCertificateId(int certificateId) {
+        List<Tag> tags = jdbcTemplate.query(READ_ALL_TAGS_BY_CERTIFICATE_ID,
+                                            new BeanPropertyRowMapper<>(Tag.class), certificateId);
+
+        return Set.copyOf(tags);
+    }
+
+    @Override
+    public Tag readTag(int id) {                                                //todo Optional
         Tag tag = jdbcTemplate.queryForObject(READ_TAG_SQL, Tag.class, id);
 
         return tag;

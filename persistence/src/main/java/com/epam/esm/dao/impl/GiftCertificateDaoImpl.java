@@ -5,12 +5,21 @@ import com.epam.esm.entity.GiftCertificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository()
+@Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
+    private static final String GIFT_CERTIFICATE_TABLE = "gift_certificate";
+    private static final String NAME_COLUMN = "name";
+    private static final String DESCRIPTION_COLUMN = "description";
+    private static final String PRICE_COLUMN = "price";
+    private static final String DURATION_COLUMN = "duration";
+    private static final String GIFT_CERTIFICATE_ID_COLUMN = "gift_certificate_id";
     private static final String READ_ALL_CERTIFICATE_SQL = """
             SELECT gift_certificate_id, gift_certificate.name, description, price, duration, create_date,
                 last_update_date
@@ -21,6 +30,15 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 last_update_date
             FROM gift_certificate
             WHERE gift_certificate_id = ?
+            """;
+    private static final String UPDATE_CERTIFICATE_BY_ID_SQL = """
+            UPDATE gift_certificate
+            SET name = IF (TRIM(:name) <> '', :name, name),
+            	description = IF (TRIM(:description) <> '', :description, description),
+                price = IF (TRIM(:price) <> '', :price, price),
+                duration = IF (TRIM(:duration) <> '', :duration, duration),
+                last_update_date = NOW()
+            WHERE gift_certificate_id = :giftCertificateId
             """;
     private static final String DELETE_CERTIFICATE_SQL = """
             DELETE FROM gift_certificate
@@ -36,8 +54,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public int createGiftCertificate(GiftCertificate certificate) {
+        int certificateId = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName(GIFT_CERTIFICATE_TABLE)
+                .usingColumns(NAME_COLUMN, DESCRIPTION_COLUMN, PRICE_COLUMN, DURATION_COLUMN)
+                .usingGeneratedKeyColumns(GIFT_CERTIFICATE_ID_COLUMN)
+                .executeAndReturnKey(new BeanPropertySqlParameterSource(certificate)).intValue();
 
-        return 0;
+        return certificateId;
     }
 
     @Override
@@ -59,7 +82,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate readGiftCertificate(int id) {
+    public GiftCertificate readGiftCertificate(int id) {                //todo Optional
         GiftCertificate giftCertificates;
 
         giftCertificates = jdbcTemplate.queryForObject(READ_CERTIFICATE_BY_ID_SQL, GiftCertificate.class, id);
@@ -68,8 +91,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public int updateGiftCertificate(int id) {
-        return 0;
+    public int updateGiftCertificate(GiftCertificate certificate) {
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        var beanParameterSource = new BeanPropertySqlParameterSource(certificate);
+
+        int affectedRow = namedParameterJdbcTemplate.update(UPDATE_CERTIFICATE_BY_ID_SQL, beanParameterSource);
+
+        return affectedRow;
     }
 
     @Override
