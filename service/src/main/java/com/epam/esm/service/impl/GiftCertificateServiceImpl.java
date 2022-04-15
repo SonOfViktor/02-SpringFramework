@@ -3,24 +3,25 @@ package com.epam.esm.service.impl;
 import com.epam.esm.builder.SelectSqlBuilder;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.SelectParams;
+import com.epam.esm.entity.SelectQueryParameter;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.validator.SelectParameterValidator;
+import com.epam.esm.validator.SelectQueryParameterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private static final String NAME_DESCRIPTION_PATTERN = "%%%s%%";
     private GiftCertificateDao giftCertificateDao;
     private SelectSqlBuilder builder;
-    private SelectParameterValidator validator;
+    private SelectQueryParameterValidator validator;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, SelectSqlBuilder builder,
-                                      SelectParameterValidator validator) {
+                                      SelectQueryParameterValidator validator) {
         this.giftCertificateDao = giftCertificateDao;
         this.builder = builder;
         this.validator = validator;
@@ -41,7 +42,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findCertificatesWithParams(SelectParams params) {
+    public List<GiftCertificate> findCertificatesWithParams(SelectQueryParameter params) {
         String findCertificatesSql = builder.buildSelectGiftCertificateSQL(params);
         List<String> args = defineArguments(params);
 
@@ -52,9 +53,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate findCertificateById(int certificateId) {
-        GiftCertificate certificate = giftCertificateDao.readGiftCertificate(certificateId);
+        Optional<GiftCertificate> certificate = giftCertificateDao.readGiftCertificate(certificateId);
 
-        return certificate;
+        return certificate.orElseThrow(RuntimeException::new);          //todo убрать
     }
 
     @Override
@@ -71,7 +72,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return affectedRow;
     }
 
-    private List<String> defineArguments(SelectParams params) {
+    private List<String> defineArguments(SelectQueryParameter params) {
         List<String> args = new ArrayList<>();
 
         if(validator.isTagNameValid(params)) {

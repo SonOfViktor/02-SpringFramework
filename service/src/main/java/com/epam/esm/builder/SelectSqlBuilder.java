@@ -1,7 +1,7 @@
 package com.epam.esm.builder;
 
-import com.epam.esm.validator.SelectParameterValidator;
-import com.epam.esm.entity.SelectParams;
+import com.epam.esm.validator.SelectQueryParameterValidator;
+import com.epam.esm.entity.SelectQueryParameter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,9 +38,9 @@ public class SelectSqlBuilder {
     private static final String COMMA = ", ";
     private static final String ORDER_NAME = "gift_certificate.name ";
     private static final String ORDER_DATE = "create_date ";
-    SelectParameterValidator validator;
+    SelectQueryParameterValidator validator;
 
-    public String buildSelectGiftCertificateSQL(SelectParams params) {
+    public String buildSelectGiftCertificateSQL(SelectQueryParameter params) {
         StringBuilder sql = new StringBuilder(BEGIN_SELECT_SQL);
 
         if (params == null || !validator.isAnyFieldValid(params)) {
@@ -58,11 +58,11 @@ public class SelectSqlBuilder {
     }
 
     @Autowired
-    public void setValidator(SelectParameterValidator validator) {
+    public void setValidator(SelectQueryParameterValidator validator) {
         this.validator = validator;
     }
 
-    private String appendJoinPart(StringBuilder sql, SelectParams params) {
+    private String appendJoinPart(StringBuilder sql, SelectQueryParameter params) {
         String tagName = "";
 
         if (validator.isTagNameValid(params)) {
@@ -73,7 +73,7 @@ public class SelectSqlBuilder {
         return tagName;
     }
 
-    private void appendWherePart(StringBuilder sql, SelectParams params, String tagName) {
+    private void appendWherePart(StringBuilder sql, SelectQueryParameter params, String tagName) {
         String name = validator.isCertificateNameValid(params) ? CERTIFICATE_NAME : EMPTY_LINE;
         String description = validator.isCertificateDescriptionValid(params) ? CERTIFICATE_DESCRIPTION : EMPTY_LINE;
         String or = "";
@@ -92,7 +92,7 @@ public class SelectSqlBuilder {
         }
     }
 
-    private void appendOrderPart(StringBuilder sql, SelectParams params) {
+    private void appendOrderPart(StringBuilder sql, SelectQueryParameter params) {
         String orderName = validator.isOrderNameValid(params) ? ORDER_NAME + params.orderName() : EMPTY_LINE;
         String orderDate = validator.isOrderDateValid(params) ? ORDER_DATE + params.orderDate() : EMPTY_LINE;
         String orderComma = (!orderName.isEmpty() && !orderDate.isEmpty()) ? COMMA : EMPTY_LINE;

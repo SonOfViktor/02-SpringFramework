@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
@@ -39,7 +40,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 duration = IF (TRIM(:duration) <> '', :duration, duration),
                 last_update_date = NOW()
             WHERE gift_certificate_id = :giftCertificateId
-            """;
+            """;                                            //todo duration maybe come 0, not a string
     private static final String DELETE_CERTIFICATE_SQL = """
             DELETE FROM gift_certificate
             WHERE gift_certificate_id = ?
@@ -67,7 +68,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public List<GiftCertificate> readAllCertificate() {
         List<GiftCertificate> giftCertificates;
 
-        giftCertificates = jdbcTemplate.queryForList(READ_ALL_CERTIFICATE_SQL, GiftCertificate.class);
+        giftCertificates = jdbcTemplate
+                .query(READ_ALL_CERTIFICATE_SQL, new BeanPropertyRowMapper<>(GiftCertificate.class));
 
         return giftCertificates;
     }
@@ -82,10 +84,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate readGiftCertificate(int id) {                //todo Optional
-        GiftCertificate giftCertificates;
+    public Optional<GiftCertificate> readGiftCertificate(int id) {
+        Optional<GiftCertificate> giftCertificates;
 
-        giftCertificates = jdbcTemplate.queryForObject(READ_CERTIFICATE_BY_ID_SQL, GiftCertificate.class, id);
+        giftCertificates = jdbcTemplate
+                .query(READ_CERTIFICATE_BY_ID_SQL, new BeanPropertyRowMapper<>(GiftCertificate.class), id)
+                .stream()
+                .findFirst();
 
         return giftCertificates;
     }

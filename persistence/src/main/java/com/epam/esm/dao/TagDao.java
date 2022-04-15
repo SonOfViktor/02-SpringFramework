@@ -1,6 +1,8 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
+
+import java.util.Optional;
 import java.util.Set;
 
 public interface TagDao {
@@ -12,7 +14,7 @@ public interface TagDao {
 
     Set<Tag> readAllTagByCertificateId(int certificateId);
 
-    Tag readTag(int id);
+    Optional<Tag> readTag(int id);
 
     int deleteTag(int id);
 }

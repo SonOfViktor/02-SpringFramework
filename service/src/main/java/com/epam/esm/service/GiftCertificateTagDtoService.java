@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.CertificateTagsDto;
-import com.epam.esm.entity.SelectParams;
+import com.epam.esm.entity.SelectQueryParameter;
 import java.util.List;
 
 public interface GiftCertificateTagDtoService {
@@ -9,7 +9,7 @@ public interface GiftCertificateTagDtoService {
 
     List<CertificateTagsDto> findAllGiftCertificateTagDto();
 
-    List<CertificateTagsDto> findGiftCertificateTagDtoByParam(SelectParams params);
+    List<CertificateTagsDto> findGiftCertificateTagDtoByParam(SelectQueryParameter params);
 
     CertificateTagsDto findGiftCertificateTagDto(int certificateId);
 

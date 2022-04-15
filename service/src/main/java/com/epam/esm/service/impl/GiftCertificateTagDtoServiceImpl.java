@@ -3,7 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateTagDao;
 import com.epam.esm.dto.CertificateTagsDto;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.SelectParams;
+import com.epam.esm.entity.SelectQueryParameter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.GiftCertificateTagDtoService;
@@ -53,7 +53,7 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional
-    public List<CertificateTagsDto> findGiftCertificateTagDtoByParam(SelectParams params) {
+    public List<CertificateTagsDto> findGiftCertificateTagDtoByParam(SelectQueryParameter params) {
         List<GiftCertificate> certificates = giftCertificateService.findCertificatesWithParams(params);
         List<CertificateTagsDto> certificateTagsDtoList = convertCertificateListToCertificateTagsDto(certificates);
 

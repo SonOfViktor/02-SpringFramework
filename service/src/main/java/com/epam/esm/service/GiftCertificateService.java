@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.SelectParams;
+import com.epam.esm.entity.SelectQueryParameter;
 import java.util.List;
 
 public interface GiftCertificateService {
@@ -9,7 +9,7 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findAllCertificates();
 
-    List<GiftCertificate> findCertificatesWithParams(SelectParams params);
+    List<GiftCertificate> findCertificatesWithParams(SelectQueryParameter params);
 
     GiftCertificate findCertificateById(int certificateId);
 

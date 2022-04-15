@@ -110,4 +110,51 @@ public class GiftCertificate {
                 .append(", lastUpdateDate ").append(lastUpdateDate);
         return builder.toString();
     }
+
+    public static class GiftCertificateBuilder {
+        private GiftCertificate giftCertificate;
+
+        public GiftCertificateBuilder() {
+            giftCertificate = new GiftCertificate();
+        }
+
+        public GiftCertificateBuilder setGiftCertificateId(int id) {
+            giftCertificate.setGiftCertificateId(id);
+            return this;
+        }
+
+        public GiftCertificateBuilder setName(String name) {
+            giftCertificate.setName(name);
+            return this;
+        }
+
+        public GiftCertificateBuilder setDescription(String description) {
+            giftCertificate.setDescription(description);
+            return this;
+        }
+
+        public GiftCertificateBuilder setPrice(BigDecimal price) {
+            giftCertificate.setPrice(price);
+            return this;
+        }
+
+        public GiftCertificateBuilder setDuration(int duration) {
+            giftCertificate.setDuration(duration);
+            return this;
+        }
+
+        public GiftCertificateBuilder setCreateDate(LocalDateTime dateTime) {
+            giftCertificate.setCreateDate(dateTime);
+            return this;
+        }
+
+        public GiftCertificateBuilder setLastUpdateDate(LocalDateTime updateDateTime) {
+            giftCertificate.setLastUpdateDate(updateDateTime);
+            return this;
+        }
+
+        public GiftCertificate createGiftCertificate() {
+            return giftCertificate;
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.entity.GiftCertificate;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GiftCertificateDao {
     int createGiftCertificate(GiftCertificate certificate);
@@ -11,7 +12,7 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> readGiftCertificateWithParam(String sql, List<String> args);
 
-    GiftCertificate readGiftCertificate(int id);
+    Optional<GiftCertificate> readGiftCertificate(int id);
 
     int updateGiftCertificate(GiftCertificate certificate);
 

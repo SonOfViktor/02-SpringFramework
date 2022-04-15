@@ -6,6 +6,7 @@ import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -47,9 +48,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag findTagById(int tagId) {
-        Tag tag = tagDao.readTag(tagId);
+        Optional<Tag> tag = tagDao.readTag(tagId);
 
-        return tag;
+        return tag.orElseThrow(RuntimeException::new);              //todo удалить
     }
 
     @Override

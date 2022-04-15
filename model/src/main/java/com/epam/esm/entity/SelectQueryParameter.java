@@ -1,13 +1,11 @@
 package com.epam.esm.entity;
 
-import java.util.Map;
-
-public record SelectParams(
+public record SelectQueryParameter(
         String tagName,
         String certificateName,
         String certificateDescription,
-        SelectOrder orderName,
-        SelectOrder orderDate) {
+        SelectQueryOrder orderName,
+        SelectQueryOrder orderDate) {
 }
 
 

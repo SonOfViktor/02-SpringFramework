@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan(basePackages = "com.epam.esm")
-//@Profile("prod")
+@Profile("prod")
 public class DaoConfig {
 
     @Bean
