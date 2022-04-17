@@ -41,20 +41,20 @@ public class SelectSqlBuilder {
     SelectQueryParameterValidator validator;
 
     public String buildSelectGiftCertificateSQL(SelectQueryParameter params) {
-        StringBuilder sql = new StringBuilder(BEGIN_SELECT_SQL);
+        StringBuilder querySql = new StringBuilder(BEGIN_SELECT_SQL);
 
         if (params == null || !validator.isAnyFieldValid(params)) {
-            logger.log(Level.INFO, "Sql request: \n{}", sql);
-            return sql.toString();
+            logger.log(Level.INFO, "Sql request: \n{}", querySql);
+            return querySql.toString();
         }
 
-        String tagName = appendJoinPart(sql, params);
-        appendWherePart(sql, params, tagName);
-        appendOrderPart(sql, params);
+        String tagName = appendQueryJoinPart(querySql, params);
+        querySql.append(createQueryWherePart(params, tagName));
+        querySql.append(createQueryOrderPart(params));
 
-        logger.log(Level.INFO, "Sql request: \n{}", sql);
+        logger.log(Level.INFO, "Sql request: \n{}", querySql);
 
-        return sql.toString();
+        return querySql.toString();
     }
 
     @Autowired
@@ -62,7 +62,7 @@ public class SelectSqlBuilder {
         this.validator = validator;
     }
 
-    private String appendJoinPart(StringBuilder sql, SelectQueryParameter params) {
+    private String appendQueryJoinPart(StringBuilder sql, SelectQueryParameter params) {
         String tagName = "";
 
         if (validator.isTagNameValid(params)) {
@@ -73,7 +73,8 @@ public class SelectSqlBuilder {
         return tagName;
     }
 
-    private void appendWherePart(StringBuilder sql, SelectQueryParameter params, String tagName) {
+    private String createQueryWherePart(SelectQueryParameter params, String tagName) {
+        String queryWherePart = "";
         String name = validator.isCertificateNameValid(params) ? CERTIFICATE_NAME : EMPTY_LINE;
         String description = validator.isCertificateDescriptionValid(params) ? CERTIFICATE_DESCRIPTION : EMPTY_LINE;
         String or = "";
@@ -87,19 +88,24 @@ public class SelectSqlBuilder {
         String and = (!name.isEmpty() || !description.isEmpty() && !tagName.isEmpty()) ? AND : EMPTY_LINE;
 
         if (!name.isEmpty() || !description.isEmpty() || !tagName.isEmpty()) {
-            String wherePart = String.format(pattern, tagName, and, name, or, description);
-            sql.append(wherePart);
+            queryWherePart = String.format(pattern, tagName, and, name, or, description);
+//            sql.append(queryWherePart);                                                    //todo delete after test
         }
+
+        return queryWherePart;
     }
 
-    private void appendOrderPart(StringBuilder sql, SelectQueryParameter params) {
+    private String createQueryOrderPart(SelectQueryParameter params) {
+        String queryOrderPart = "";
         String orderName = validator.isOrderNameValid(params) ? ORDER_NAME + params.orderName() : EMPTY_LINE;
         String orderDate = validator.isOrderDateValid(params) ? ORDER_DATE + params.orderDate() : EMPTY_LINE;
         String orderComma = (!orderName.isEmpty() && !orderDate.isEmpty()) ? COMMA : EMPTY_LINE;
 
         if (!orderName.isEmpty() || !orderDate.isEmpty()) {
-            String orderPart = String.format(ORDER_PART_PATTERN, orderName, orderComma, orderDate);
-            sql.append(orderPart);
+            queryOrderPart = String.format(ORDER_PART_PATTERN, orderName, orderComma, orderDate);
+//            sql.append(queryOrderPart);
         }
+
+        return queryOrderPart;
     }
 }
