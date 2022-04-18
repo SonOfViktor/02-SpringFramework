@@ -4,6 +4,7 @@ import com.epam.esm.builder.SelectSqlBuilder;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.SelectQueryParameter;
+import com.epam.esm.exception.DataNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.SelectQueryParameterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +53,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public GiftCertificate findCertificateById(int certificateId) {
-        Optional<GiftCertificate> certificate = giftCertificateDao.readGiftCertificate(certificateId);
+    public GiftCertificate findCertificateById(int certificateId) throws DataNotFoundException {
+        Optional<GiftCertificate> certificateOptional = giftCertificateDao.readGiftCertificate(certificateId);
+        String errorMessage = "There is no certificate with Id " + certificateId + " in database";
 
-        return certificate.orElseThrow(RuntimeException::new);          //todo убрать
+        GiftCertificate certificate = certificateOptional.orElseThrow(() -> new DataNotFoundException(errorMessage));
+
+        return certificate;
     }
 
     @Override

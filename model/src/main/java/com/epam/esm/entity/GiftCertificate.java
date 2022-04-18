@@ -1,16 +1,40 @@
 package com.epam.esm.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+//import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+//import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class GiftCertificate {
+    @Positive
     private int giftCertificateId;
+
+    @NotNull
+    @Size(min = 3, max = 45)
     private String name;
+
+    @Size(min = 0, max = 500)
     private String description;
+
+    @Positive
+    @Digits(integer = 3, fraction = 2)
     private BigDecimal price;
+
+    @Positive
+    @Digits(integer = 2, fraction = 0)
     private int duration;
+
+    @PastOrPresent
     private LocalDateTime createDate;
+
+    @PastOrPresent
     private LocalDateTime lastUpdateDate;
 
     public GiftCertificate() {
@@ -66,6 +90,7 @@ public class GiftCertificate {
         this.duration = duration;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     public LocalDateTime getCreateDate() {
         return createDate;
     }
@@ -74,6 +99,7 @@ public class GiftCertificate {
         this.createDate = createDate;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     public LocalDateTime getLastUpdateDate() {
         return lastUpdateDate;
     }
@@ -101,7 +127,7 @@ public class GiftCertificate {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder()
-                .append("GiftCertificate #").append(giftCertificateId)
+                .append("GiftCertificate #").append(giftCertificateId).append("\n")
                 .append(", name= ").append(name).append("\n")
                 .append("description ").append(description).append("\n")
                 .append("duration ").append(duration).append(" day(s)")
