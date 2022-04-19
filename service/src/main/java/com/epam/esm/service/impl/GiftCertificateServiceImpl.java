@@ -6,7 +6,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.SelectQueryParameter;
 import com.epam.esm.exception.DataNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.validator.SelectQueryParameterValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -18,14 +18,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private static final String NAME_DESCRIPTION_PATTERN = "%%%s%%";
     private GiftCertificateDao giftCertificateDao;
     private SelectSqlBuilder builder;
-    private SelectQueryParameterValidator validator;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, SelectSqlBuilder builder,
-                                      SelectQueryParameterValidator validator) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, SelectSqlBuilder builder) {
         this.giftCertificateDao = giftCertificateDao;
         this.builder = builder;
-        this.validator = validator;
     }
 
     @Override
@@ -80,15 +77,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private List<String> defineArguments(SelectQueryParameter params) {
         List<String> args = new ArrayList<>();
 
-        if(validator.isTagNameValid(params)) {
+        if(!StringUtils.isBlank(params.tagName())) {
             args.add(params.tagName());
         }
 
-        if(validator.isCertificateNameValid(params)) {
+        if(!StringUtils.isBlank(params.certificateName())) {
             args.add(String.format(NAME_DESCRIPTION_PATTERN, params.certificateName()));
         }
 
-        if(validator.isCertificateDescriptionValid(params)) {
+        if(!StringUtils.isBlank(params.certificateDescription())) {
             args.add(String.format(NAME_DESCRIPTION_PATTERN, params.certificateDescription()));
         }
 
