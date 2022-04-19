@@ -85,7 +85,7 @@ public class SelectSqlBuilder {
             pattern = WHERE_PART_PATTERN_WITH_BRACES;
         }
 
-        String and = (!name.isEmpty() || !description.isEmpty() && !tagName.isEmpty()) ? AND : EMPTY_LINE;
+        String and = (!tagName.isEmpty() && !(name.isEmpty() && description.isEmpty())) ? AND : EMPTY_LINE;
 
         if (!name.isEmpty() || !description.isEmpty() || !tagName.isEmpty()) {
             queryWherePart = String.format(pattern, tagName, and, name, or, description);

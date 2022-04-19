@@ -15,7 +15,7 @@ public interface GiftCertificateService {
 
     GiftCertificate findCertificateById(int certificateId) throws DataNotFoundException;
 
-    int updateGiftCertificate(GiftCertificate certificate);
+    int updateGiftCertificate(GiftCertificate certificate, int id);
 
     int deleteCertificate(int certificateId);
 }

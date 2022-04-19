@@ -32,15 +32,14 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int[] addGiftCertificateTagDto(CertificateTagsDto certificateTagsDto) {
+    public int addGiftCertificateTagDto(CertificateTagsDto certificateTagsDto) {
         int certificateId = giftCertificateService.addGiftCertificate(certificateTagsDto.certificate());
 
         tagService.addTags(certificateTagsDto.tags());
 
-        int[] affectedRows = giftCertificateTagDao
-                .createGiftCertificateTagEntries(certificateId, certificateTagsDto.tags());
+        giftCertificateTagDao.createGiftCertificateTagEntries(certificateId, certificateTagsDto.tags());
 
-        return affectedRows;
+        return certificateId;
     }
 
     @Override
@@ -72,10 +71,11 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto) {
+    public int updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto, int id) {
         tagService.addTags(certificateTagsDto.tags());
 
-        int affectedRow = giftCertificateService.updateGiftCertificate(certificateTagsDto.certificate());
+        int affectedRow = giftCertificateService.updateGiftCertificate(certificateTagsDto.certificate(), id);
+        giftCertificateTagDao.createGiftCertificateTagEntries(id, certificateTagsDto.tags());
 
         return affectedRow;
     }

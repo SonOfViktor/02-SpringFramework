@@ -10,4 +10,5 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @Profile("prod")
 public class WebConfig {
+
 }

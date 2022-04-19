@@ -1,7 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DataNotFoundException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Set<Tag> findAllTags() {
+
         Set<Tag> tags = tagDao.readAllTag();
 
         return tags;
@@ -47,10 +50,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findTagById(int tagId) {
-        Optional<Tag> tag = tagDao.readTag(tagId);
+    public Tag findTagById(int tagId) throws DataNotFoundException {
+        Optional<Tag> tagOptional = tagDao.readTag(tagId);
+        String errorMessage = "There is no tag with Id " + tagId + " in database";
 
-        return tag.orElseThrow(RuntimeException::new);              //todo удалить
+        Tag tag = tagOptional.orElseThrow(() -> new DataNotFoundException(errorMessage));
+
+        return tag;
     }
 
     @Override

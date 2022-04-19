@@ -63,7 +63,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public int updateGiftCertificate(GiftCertificate certificate) {
+    public int updateGiftCertificate(GiftCertificate certificate, int id) {
+        certificate.setGiftCertificateId(id);
         int affectedRow = giftCertificateDao.updateGiftCertificate(certificate);
 
         return affectedRow;

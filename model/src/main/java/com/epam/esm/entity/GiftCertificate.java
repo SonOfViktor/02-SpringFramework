@@ -13,14 +13,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class GiftCertificate {
-    @Positive
     private int giftCertificateId;
 
     @NotNull
     @Size(min = 3, max = 45)
     private String name;
 
-    @Size(min = 0, max = 500)
+    @Size(max = 500)
     private String description;
 
     @Positive
@@ -31,10 +30,10 @@ public class GiftCertificate {
     @Digits(integer = 2, fraction = 0)
     private int duration;
 
-    @PastOrPresent
+    @Null(message = "Create date is generated automatically")
     private LocalDateTime createDate;
 
-    @PastOrPresent
+    @Null(message = "Last update date is generated automatically")
     private LocalDateTime lastUpdateDate;
 
     public GiftCertificate() {
@@ -126,15 +125,14 @@ public class GiftCertificate {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder()
-                .append("GiftCertificate #").append(giftCertificateId).append("\n")
-                .append(", name= ").append(name).append("\n")
-                .append("description ").append(description).append("\n")
-                .append("duration ").append(duration).append(" day(s)")
-                .append("price ").append(price)
-                .append(", createDate ").append(createDate)
-                .append(", lastUpdateDate ").append(lastUpdateDate);
-        return builder.toString();
+        String builder = "GiftCertificate #" + giftCertificateId + "\n" +
+                ", name= " + name + "\n" +
+                "description " + description + "\n" +
+                "duration " + duration + " day(s)" +
+                ", price " + price +
+                ", createDate " + createDate +
+                ", lastUpdateDate " + lastUpdateDate;
+        return builder;
     }
 
     public static class GiftCertificateBuilder {
