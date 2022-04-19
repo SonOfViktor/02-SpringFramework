@@ -2,15 +2,11 @@ package com.epam.esm.builder;
 
 import com.epam.esm.validator.SelectQueryParameterValidator;
 import com.epam.esm.entity.SelectQueryParameter;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SelectSqlBuilder {
-    private static final Logger logger = LogManager.getLogger();
     private static final String BEGIN_SELECT_SQL = """
                 SELECT gift_certificate_id, gift_certificate.name, description,
                        price, duration, create_date, last_update_date
@@ -44,15 +40,12 @@ public class SelectSqlBuilder {
         StringBuilder querySql = new StringBuilder(BEGIN_SELECT_SQL);
 
         if (params == null || !validator.isAnyFieldValid(params)) {
-            logger.log(Level.INFO, "Sql request: \n{}", querySql);
             return querySql.toString();
         }
 
         String tagName = appendQueryJoinPart(querySql, params);
         querySql.append(createQueryWherePart(params, tagName));
         querySql.append(createQueryOrderPart(params));
-
-        logger.log(Level.INFO, "Sql request: \n{}", querySql);
 
         return querySql.toString();
     }
@@ -89,7 +82,6 @@ public class SelectSqlBuilder {
 
         if (!name.isEmpty() || !description.isEmpty() || !tagName.isEmpty()) {
             queryWherePart = String.format(pattern, tagName, and, name, or, description);
-//            sql.append(queryWherePart);                                                    //todo delete after test
         }
 
         return queryWherePart;
@@ -103,7 +95,6 @@ public class SelectSqlBuilder {
 
         if (!orderName.isEmpty() || !orderDate.isEmpty()) {
             queryOrderPart = String.format(ORDER_PART_PATTERN, orderName, orderComma, orderDate);
-//            sql.append(queryOrderPart);
         }
 
         return queryOrderPart;
