@@ -104,7 +104,7 @@ class GiftCertificateDaoImplTest {
                 .setGiftCertificateId(1)
                 .setName("Milavitsa")
                 .setDescription("Our care for you")
-                .setDuration(40)                        // todo when make replacing 0 delete this line
+                .setDuration(40)
                 .createGiftCertificate();
         int actual = giftCertificateDao.updateGiftCertificate(replaceCertificate);
         assertEquals(1, actual);

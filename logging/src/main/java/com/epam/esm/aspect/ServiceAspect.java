@@ -46,7 +46,6 @@ public class ServiceAspect {
     @AfterReturning(pointcut = "findDtoServiceMethodPointcut()", returning = "result")
     public void logFindDtoServiceMethod(JoinPoint joinPoint, Object result) {
         MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
-
         logger.log(Level.INFO, "Method {}() from class {} returned {}",
                 methodMetadata.methodName(), methodMetadata.className(), result);
     }

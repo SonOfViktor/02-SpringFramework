@@ -2,14 +2,13 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateTagsDto;
 import com.epam.esm.entity.SelectQueryParameter;
-import com.epam.esm.exception.DataNotFoundException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.GiftCertificateTagDtoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,7 +32,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/{id}")
-    public CertificateTagsDto showCertificate(@PathVariable int id) throws DataNotFoundException {
+    public CertificateTagsDto showCertificate(@PathVariable int id) throws ResourceNotFoundException {
         CertificateTagsDto certificate = certificateTagService.findGiftCertificateTagDto(id);
 
         return certificate;

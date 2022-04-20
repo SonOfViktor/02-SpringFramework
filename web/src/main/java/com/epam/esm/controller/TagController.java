@@ -1,8 +1,7 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.CertificateTagsDto;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DataNotFoundException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class TagController {
     }
 
     @GetMapping("/{id}")
-    public Tag showTag(@PathVariable int id) throws DataNotFoundException {
+    public Tag showTag(@PathVariable int id) throws ResourceNotFoundException {
         Tag tag = tagService.findTagById(id);
 
         return tag;

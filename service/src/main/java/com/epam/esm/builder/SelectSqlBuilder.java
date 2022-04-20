@@ -55,10 +55,11 @@ public class SelectSqlBuilder {
 
     private String createQueryWherePart(SelectQueryParameter params, String tagName) {
         String queryWherePart = EMPTY;
-        String name = !isBlank(params.certificateName()) ? CERTIFICATE_NAME : EMPTY;
-        String description = !isBlank(params.certificateDescription()) ? CERTIFICATE_DESCRIPTION : EMPTY;
         String or = EMPTY;
         String pattern = WHERE_PART_PATTERN;
+
+        String name = !isBlank(params.certificateName()) ? CERTIFICATE_NAME : EMPTY;
+        String description = !isBlank(params.certificateDescription()) ? CERTIFICATE_DESCRIPTION : EMPTY;
 
         if(isNoneEmpty(name, description)) {
             or = OR;
@@ -76,6 +77,7 @@ public class SelectSqlBuilder {
 
     private String createQueryOrderPart(SelectQueryParameter params) {
         String queryOrderPart = EMPTY;
+
         String orderName = params.orderName() != null ? ORDER_NAME + params.orderName() : EMPTY;
         String orderDate = params.orderDate() != null ? ORDER_DATE + params.orderDate() : EMPTY;
         String orderComma = (isNoneEmpty(orderName, orderDate)) ? COMMA : EMPTY;

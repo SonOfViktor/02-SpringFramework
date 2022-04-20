@@ -5,7 +5,7 @@ import com.epam.esm.dto.CertificateTagsDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.SelectQueryParameter;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DataNotFoundException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.GiftCertificateTagDtoService;
 import com.epam.esm.service.TagService;
@@ -62,7 +62,7 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional
-    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) throws DataNotFoundException {
+    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) throws ResourceNotFoundException {
         GiftCertificate certificate = giftCertificateService.findCertificateById(certificateId);
         Set<Tag> tags = tagService.findTagsByCertificateId(certificateId);
 

@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.ErrorInfo;
-import com.epam.esm.exception.DataNotFoundException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @ControllerAdvice
 public class ExceptionAdviceController {
     @ExceptionHandler
-    public ResponseEntity<ErrorInfo> dataNotFoundExceptionHandler(DataNotFoundException exception) {
+    public ResponseEntity<ErrorInfo> dataNotFoundExceptionHandler(ResourceNotFoundException exception) {
         ErrorInfo errorInfo = new ErrorInfo(exception.getMessage(), 40401);
 
         return new ResponseEntity<>(errorInfo, HttpStatus.NOT_FOUND);
@@ -44,7 +44,4 @@ public class ExceptionAdviceController {
 
         return new ResponseEntity<>(errorInfo, HttpStatus.NOT_FOUND);
     }
-
-            //todo code must be based on Status and Object
-
 }

@@ -4,7 +4,7 @@ import com.epam.esm.builder.SelectSqlBuilder;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.SelectQueryParameter;
-import com.epam.esm.exception.DataNotFoundException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
+    private static final String CERTIFICATE_NOT_FOUND_MESSAGE = "There is no certificate with Id %s in database";
     private static final String NAME_DESCRIPTION_PATTERN = "%%%s%%";
     private GiftCertificateDao giftCertificateDao;
     private SelectSqlBuilder builder;
@@ -50,11 +51,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public GiftCertificate findCertificateById(int certificateId) throws DataNotFoundException {
+    public GiftCertificate findCertificateById(int certificateId) throws ResourceNotFoundException {
         Optional<GiftCertificate> certificateOptional = giftCertificateDao.readGiftCertificate(certificateId);
-        String errorMessage = "There is no certificate with Id " + certificateId + " in database";
 
-        GiftCertificate certificate = certificateOptional.orElseThrow(() -> new DataNotFoundException(errorMessage));
+        GiftCertificate certificate = certificateOptional.orElseThrow(() ->
+                new ResourceNotFoundException(String.format(CERTIFICATE_NOT_FOUND_MESSAGE, certificateId)));
 
         return certificate;
     }
@@ -89,7 +90,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             args.add(String.format(NAME_DESCRIPTION_PATTERN, params.certificateDescription()));
         }
 
-        System.out.println(args);
         return args;
     }
 }

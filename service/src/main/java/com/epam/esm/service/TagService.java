@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DataNotFoundException;
+import com.epam.esm.exception.ResourceNotFoundException;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ public interface TagService {
 
     Set<Tag> findTagsByCertificateId(int certificateId);
 
-    Tag findTagById(int tagId) throws DataNotFoundException;
+    Tag findTagById(int tagId) throws ResourceNotFoundException;
 
     int deleteTag(int tagId);
 }

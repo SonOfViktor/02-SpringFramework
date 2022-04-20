@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -37,10 +36,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             SET name = IF (TRIM(:name) <> '', :name, name),
             	description = IF (TRIM(:description) <> '', :description, description),
                 price = IF (TRIM(:price) <> '', :price, price),
-                duration = IF (TRIM(:duration) <> '', :duration, duration),
+                duration = IF (:duration > 0, :duration, duration),
                 last_update_date = NOW()
             WHERE gift_certificate_id = :giftCertificateId
-            """;                                            //todo duration maybe come 0, not a string
+            """;
     private static final String DELETE_CERTIFICATE_SQL = """
             DELETE FROM gift_certificate
             WHERE gift_certificate_id = ?

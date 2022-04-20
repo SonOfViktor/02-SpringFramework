@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.SelectQueryParameter;
-import com.epam.esm.exception.DataNotFoundException;
+import com.epam.esm.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findCertificatesWithParams(SelectQueryParameter params);
 
-    GiftCertificate findCertificateById(int certificateId) throws DataNotFoundException;
+    GiftCertificate findCertificateById(int certificateId) throws ResourceNotFoundException;
 
     int updateGiftCertificate(GiftCertificate certificate, int id);
 
