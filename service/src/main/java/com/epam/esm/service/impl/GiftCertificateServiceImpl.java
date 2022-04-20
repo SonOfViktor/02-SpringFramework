@@ -89,6 +89,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             args.add(String.format(NAME_DESCRIPTION_PATTERN, params.certificateDescription()));
         }
 
+        System.out.println(args);
         return args;
     }
 }

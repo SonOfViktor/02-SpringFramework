@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import java.util.Arrays;
 
 @Component
 @Aspect
@@ -27,6 +28,9 @@ public class ServiceAspect {
 
     @Pointcut("execution(int com.epam.esm.service.*..add*(..))")
     public void addServiceMethodPointcut() {}
+
+    @Pointcut("execution(int[] com.epam.esm.service.*..*(..))")
+    public void serviceMethodReturnIntArrayPointcut() {}
 
     @Pointcut("execution(* com.epam.esm.builder.SelectSqlBuilder.buildSelectGiftCertificateSQL(..))")
     public void buildSelectGiftCertificateSQLPointcut() {}
@@ -53,6 +57,14 @@ public class ServiceAspect {
 
         logger.log(Level.INFO, "Method {}() from class {} returned id {}",
                 methodMetadata.methodName(), methodMetadata.className(), id);
+    }
+
+    @AfterReturning(pointcut = "serviceMethodReturnIntArrayPointcut()", returning = "affectedRows")
+    public void logMethodReturnAffectedRows(JoinPoint joinPoint, int[] affectedRows) {
+        MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
+
+        logger.log(Level.INFO, "Method {}() from class {} returned array {}",
+                methodMetadata.methodName(), methodMetadata.className(), Arrays.toString(affectedRows));
     }
 
     @AfterReturning(pointcut = "buildSelectGiftCertificateSQLPointcut()", returning = "selectQuerySql")

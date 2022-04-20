@@ -39,6 +39,7 @@
             <scope>compile</scope>
         </dependency>
 
+
         <dependency>
             <groupId>com.epam.esm</groupId>
             <artifactId>logging</artifactId>

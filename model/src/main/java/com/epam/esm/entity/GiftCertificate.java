@@ -121,7 +121,7 @@ public class GiftCertificate {
     @Override
     public String toString() {
         String string = "\nGiftCertificate #" + giftCertificateId +
-                ", name= " + name + "\n" +
+                " " + name + "\n" +
                 "description " + description + "\n" +
                 "duration " + duration + " day(s)" +
                 ", price " + price +

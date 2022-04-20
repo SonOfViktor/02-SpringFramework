@@ -1,7 +1,6 @@
 package com.epam.esm.builder;
 
 import com.epam.esm.entity.SelectQueryParameter;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import static org.apache.commons.lang3.StringUtils.*;

@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 @ComponentScan("com.epam.esm")
 @Profile("prod")
 @Import({DaoConfig.class, LogConfig.class})
+
 public class ServiceConfig {
 
     private DataSource dataSource;
