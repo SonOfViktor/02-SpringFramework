@@ -71,13 +71,13 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto, int id) {
+    public int[] updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto, int id) {
         tagService.addTags(certificateTagsDto.tags());
 
-        int affectedRow = giftCertificateService.updateGiftCertificate(certificateTagsDto.certificate(), id);
-        giftCertificateTagDao.createGiftCertificateTagEntries(id, certificateTagsDto.tags());
+        giftCertificateService.updateGiftCertificate(certificateTagsDto.certificate(), id);
+        int[] affectedRows = giftCertificateTagDao.createGiftCertificateTagEntries(id, certificateTagsDto.tags());
 
-        return affectedRow;
+        return affectedRows;
     }
 
     private List<CertificateTagsDto> convertCertificateListToCertificateTagsDto(List<GiftCertificate> certificates) {

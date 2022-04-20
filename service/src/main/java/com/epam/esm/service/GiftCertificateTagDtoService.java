@@ -15,5 +15,5 @@ public interface GiftCertificateTagDtoService {
 
     CertificateTagsDto findGiftCertificateTagDto(int certificateId) throws DataNotFoundException;
 
-    int updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto, int id);
+    int[] updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto, int id);
 }

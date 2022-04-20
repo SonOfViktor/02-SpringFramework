@@ -1,5 +1,6 @@
 package com.epam.esm.aspect;
 
+import com.epam.esm.entity.MethodMetadata;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,15 +16,58 @@ import org.springframework.stereotype.Component;
 public class ServiceAspect {
     private static final Logger logger = LogManager.getLogger();
 
-    @Pointcut("execution(int com.epam.esm.service.*..*(..))")
-    public void methodReturnIntPointcut() {}
+    @Pointcut("execution(int com.epam.esm.service.*..update*(..))")
+    public void updateServiceMethodPointcut() {}
 
-    @AfterReturning(pointcut = "methodReturnIntPointcut()", returning = "result")
-    public void logMethodReturnInt(JoinPoint joinPoint, int result) {
+    @Pointcut("execution(int com.epam.esm.service.*..delete*(int))")
+    public void deleteServiceMethodPointcut() {}
+
+    @Pointcut("execution(* com.epam.esm.service.*.GiftCertificateTagDtoServiceImpl.find*(..))")
+    public void findDtoServiceMethodPointcut() {}
+
+    @Pointcut("execution(int com.epam.esm.service.*..add*(..))")
+    public void addServiceMethodPointcut() {}
+
+    @Pointcut("execution(* com.epam.esm.builder.SelectSqlBuilder.buildSelectGiftCertificateSQL(..))")
+    public void buildSelectGiftCertificateSQLPointcut() {}
+
+    @AfterReturning(pointcut = "updateServiceMethodPointcut() && deleteServiceMethodPointcut()")
+    public void logUpdateDeleteServiceMethod(JoinPoint joinPoint) {
+        MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
+
+        logger.log(Level.INFO, "Method {}() from class {} worked successfully",
+                methodMetadata.methodName(), methodMetadata.className());
+    }
+
+    @AfterReturning(pointcut = "findDtoServiceMethodPointcut()", returning = "result")
+    public void logFindDtoServiceMethod(JoinPoint joinPoint, Object result) {
+        MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
+
+        logger.log(Level.INFO, "Method {}() from class {} returned {}",
+                methodMetadata.methodName(), methodMetadata.className(), result);
+    }
+
+    @AfterReturning(pointcut = "addServiceMethodPointcut()", returning = "id")
+    public void logAddServiceMethod(JoinPoint joinPoint, int id) {
+        MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
+
+        logger.log(Level.INFO, "Method {}() from class {} returned id {}",
+                methodMetadata.methodName(), methodMetadata.className(), id);
+    }
+
+    @AfterReturning(pointcut = "buildSelectGiftCertificateSQLPointcut()", returning = "selectQuerySql")
+    public void logBuildSelectGiftCertificateSQL(JoinPoint joinPoint, String selectQuerySql) {
+        MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
+
+        logger.log(Level.INFO, "Method {}() from class {} returned \n{}",
+                methodMetadata.methodName(), methodMetadata.className(), selectQuerySql);
+    }
+
+    private MethodMetadata takeMethodMetadata(JoinPoint joinPoint) {
         Signature methodSignature = joinPoint.getSignature();
-        String methodName = methodSignature.getName();
         String className = joinPoint.getSignature().getDeclaringType().getSimpleName();
+        String methodName = methodSignature.getName();
 
-        logger.log(Level.INFO, "Method {}() from class {} return {}", methodName, className, result);
+        return new MethodMetadata(className, methodName);
     }
 }

@@ -1,11 +1,6 @@
 package com.epam.esm.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-//import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-//import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -125,14 +120,14 @@ public class GiftCertificate {
 
     @Override
     public String toString() {
-        String builder = "GiftCertificate #" + giftCertificateId + "\n" +
+        String string = "\nGiftCertificate #" + giftCertificateId +
                 ", name= " + name + "\n" +
                 "description " + description + "\n" +
                 "duration " + duration + " day(s)" +
                 ", price " + price +
                 ", createDate " + createDate +
                 ", lastUpdateDate " + lastUpdateDate;
-        return builder;
+        return string;
     }
 
     public static class GiftCertificateBuilder {

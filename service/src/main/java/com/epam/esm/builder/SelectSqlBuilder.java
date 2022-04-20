@@ -56,17 +56,17 @@ public class SelectSqlBuilder {
 
     private String createQueryWherePart(SelectQueryParameter params, String tagName) {
         String queryWherePart = EMPTY;
-        String name = isBlank(params.certificateName()) ? CERTIFICATE_NAME : EMPTY;
-        String description = isBlank(params.certificateDescription()) ? CERTIFICATE_DESCRIPTION : EMPTY;
+        String name = !isBlank(params.certificateName()) ? CERTIFICATE_NAME : EMPTY;
+        String description = !isBlank(params.certificateDescription()) ? CERTIFICATE_DESCRIPTION : EMPTY;
         String or = EMPTY;
         String pattern = WHERE_PART_PATTERN;
 
-        if(!isAllEmpty(name, description)) {
+        if(isNoneEmpty(name, description)) {
             or = OR;
             pattern = WHERE_PART_PATTERN_WITH_BRACES;
         }
 
-        String and = (!tagName.isEmpty() && !isAnyEmpty(name, description)) ? AND : EMPTY;
+        String and = (!tagName.isEmpty() && !isAllEmpty(name, description)) ? AND : EMPTY;
 
         if (!isAllEmpty(name, description, tagName)) {
             queryWherePart = String.format(pattern, tagName, and, name, or, description);
@@ -79,9 +79,9 @@ public class SelectSqlBuilder {
         String queryOrderPart = EMPTY;
         String orderName = params.orderName() != null ? ORDER_NAME + params.orderName() : EMPTY;
         String orderDate = params.orderDate() != null ? ORDER_DATE + params.orderDate() : EMPTY;
-        String orderComma = (!isAllEmpty(orderName, orderDate)) ? COMMA : EMPTY;
+        String orderComma = (isNoneEmpty(orderName, orderDate)) ? COMMA : EMPTY;
 
-        if (!isAnyEmpty(orderName, orderDate)) {
+        if (!isAllEmpty(orderName, orderDate)) {
             queryOrderPart = String.format(ORDER_PART_PATTERN, orderName, orderComma, orderDate);
         }
 
@@ -89,7 +89,7 @@ public class SelectSqlBuilder {
     }
 
     private boolean isAllFieldNullOrBlank(SelectQueryParameter params) {
-        return StringUtils.isAllBlank(params.tagName(), params.certificateName(), params.certificateDescription()) &&
+        return isAllBlank(params.tagName(), params.certificateName(), params.certificateDescription()) &&
                 params.orderName() == null && params.orderDate() == null;
     }
 }

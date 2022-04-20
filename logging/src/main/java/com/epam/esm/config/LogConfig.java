@@ -1,6 +1,5 @@
 package com.epam.esm.config;
 
-import com.epam.esm.aspect.ServiceAspect;
 import org.springframework.context.annotation.*;
 
 @Configuration
@@ -8,9 +7,4 @@ import org.springframework.context.annotation.*;
 @EnableAspectJAutoProxy
 @Profile("prod")
 public class LogConfig {
-
-//    @Bean
-//    public ServiceAspect serviceAspect() {
-//        return new ServiceAspect();
-//    }
 }

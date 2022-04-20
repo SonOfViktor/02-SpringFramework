@@ -36,7 +36,6 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Set<Tag> findAllTags() {
-
         Set<Tag> tags = tagDao.readAllTag();
 
         return tags;
