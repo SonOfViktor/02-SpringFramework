@@ -17,11 +17,11 @@ public class GiftCertificate {
     @Size(max = 500)
     private String description;
 
-    @Positive
+    @Positive(message = "{certificate.price.positive}")
     @Digits(integer = 3, fraction = 2)
     private BigDecimal price;
 
-    @Positive
+    @Positive(message = "{certificate.duration.positive}")
     @Digits(integer = 2, fraction = 0)
     private int duration;
 

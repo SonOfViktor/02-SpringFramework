@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateTagsDto;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.SelectQueryParameter;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -55,9 +57,15 @@ public class GiftCertificateController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateCertificate(@RequestBody CertificateTagsDto certificateTagDto, @PathVariable int id) {
+    public void updateCertificate(@RequestBody @Valid CertificateTagsDto certificateTagDto, @PathVariable int id) {
         certificateTagService.updateGiftCertificateTagDto(certificateTagDto, id);
     }
+//
+//    @PatchMapping("/{id}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void updateCertificate(@Valid @RequestBody GiftCertificate certificate, @PathVariable int id) {
+//        certificateService.updateGiftCertificate(certificate, id);
+//    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
