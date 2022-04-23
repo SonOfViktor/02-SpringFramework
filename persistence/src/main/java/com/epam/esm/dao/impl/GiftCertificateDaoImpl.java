@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
@@ -36,7 +36,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             SET name = IF (TRIM(:name) <> '', :name, name),
             	description = IF (TRIM(:description) <> '', :description, description),
                 price = IF (TRIM(:price) <> '', :price, price),
-                duration = IF (TRIM(:duration) <> '', :duration, duration),
+                duration = IF (:duration > 0, :duration, duration),
                 last_update_date = NOW()
             WHERE gift_certificate_id = :giftCertificateId
             """;
@@ -67,7 +67,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public List<GiftCertificate> readAllCertificate() {
         List<GiftCertificate> giftCertificates;
 
-        giftCertificates = jdbcTemplate.queryForList(READ_ALL_CERTIFICATE_SQL, GiftCertificate.class);
+        giftCertificates = jdbcTemplate
+                .query(READ_ALL_CERTIFICATE_SQL, new BeanPropertyRowMapper<>(GiftCertificate.class));
 
         return giftCertificates;
     }
@@ -82,10 +83,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate readGiftCertificate(int id) {                //todo Optional
-        GiftCertificate giftCertificates;
+    public Optional<GiftCertificate> readGiftCertificate(int id) {
+        Optional<GiftCertificate> giftCertificates;
 
-        giftCertificates = jdbcTemplate.queryForObject(READ_CERTIFICATE_BY_ID_SQL, GiftCertificate.class, id);
+        giftCertificates = jdbcTemplate
+                .query(READ_CERTIFICATE_BY_ID_SQL, new BeanPropertyRowMapper<>(GiftCertificate.class), id)
+                .stream()
+                .findFirst();
 
         return giftCertificates;
     }

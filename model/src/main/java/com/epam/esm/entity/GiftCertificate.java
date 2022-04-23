@@ -1,16 +1,34 @@
 package com.epam.esm.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class GiftCertificate {
     private int giftCertificateId;
+
+    @NotNull
+    @Size(min = 3, max = 45)
     private String name;
+
+    @Size(max = 500)
     private String description;
+
+    @Positive
+    @Digits(integer = 3, fraction = 2)
     private BigDecimal price;
+
+    @Positive
+    @Digits(integer = 2, fraction = 0)
     private int duration;
+
+    @Null(message = "Create date is generated automatically")
     private LocalDateTime createDate;
+
+    @Null(message = "Last update date is generated automatically")
     private LocalDateTime lastUpdateDate;
 
     public GiftCertificate() {
@@ -66,6 +84,7 @@ public class GiftCertificate {
         this.duration = duration;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     public LocalDateTime getCreateDate() {
         return createDate;
     }
@@ -74,6 +93,7 @@ public class GiftCertificate {
         this.createDate = createDate;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     public LocalDateTime getLastUpdateDate() {
         return lastUpdateDate;
     }
@@ -100,14 +120,60 @@ public class GiftCertificate {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder()
-                .append("GiftCertificate #").append(giftCertificateId)
-                .append(", name= ").append(name).append("\n")
-                .append("description ").append(description).append("\n")
-                .append("duration ").append(duration).append(" day(s)")
-                .append("price ").append(price)
-                .append(", createDate ").append(createDate)
-                .append(", lastUpdateDate ").append(lastUpdateDate);
-        return builder.toString();
+        String string = "\nGiftCertificate #" + giftCertificateId +
+                " " + name + "\n" +
+                "description " + description + "\n" +
+                "duration " + duration + " day(s)" +
+                ", price " + price +
+                ", createDate " + createDate +
+                ", lastUpdateDate " + lastUpdateDate;
+        return string;
+    }
+
+    public static class GiftCertificateBuilder {
+        private GiftCertificate giftCertificate;
+
+        public GiftCertificateBuilder() {
+            giftCertificate = new GiftCertificate();
+        }
+
+        public GiftCertificateBuilder setGiftCertificateId(int id) {
+            giftCertificate.setGiftCertificateId(id);
+            return this;
+        }
+
+        public GiftCertificateBuilder setName(String name) {
+            giftCertificate.setName(name);
+            return this;
+        }
+
+        public GiftCertificateBuilder setDescription(String description) {
+            giftCertificate.setDescription(description);
+            return this;
+        }
+
+        public GiftCertificateBuilder setPrice(BigDecimal price) {
+            giftCertificate.setPrice(price);
+            return this;
+        }
+
+        public GiftCertificateBuilder setDuration(int duration) {
+            giftCertificate.setDuration(duration);
+            return this;
+        }
+
+        public GiftCertificateBuilder setCreateDate(LocalDateTime dateTime) {
+            giftCertificate.setCreateDate(dateTime);
+            return this;
+        }
+
+        public GiftCertificateBuilder setLastUpdateDate(LocalDateTime updateDateTime) {
+            giftCertificate.setLastUpdateDate(updateDateTime);
+            return this;
+        }
+
+        public GiftCertificate createGiftCertificate() {
+            return giftCertificate;
+        }
     }
 }

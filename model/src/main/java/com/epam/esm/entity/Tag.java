@@ -1,12 +1,28 @@
 package com.epam.esm.entity;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class Tag {
+    @Positive
     private int tagId;
+
+    @NotNull
+    @Size(min = 2, max = 45)
     private String name;
 
     public Tag() {
+    }
+
+    public Tag(String name) {
+        this.name = name;
+    }
+
+    public Tag(int tagId, String name) {
+        this.tagId = tagId;
+        this.name = name;
     }
 
     public int getTagId() {

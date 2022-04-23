@@ -2,14 +2,17 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class TagServiceImpl implements TagService {
+    private static final String TAG_NOT_FOUND_MESSAGE = "There is no tag with Id %s in database";
     private TagDao tagDao;
 
     @Autowired
@@ -46,8 +49,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findTagById(int tagId) {
-        Tag tag = tagDao.readTag(tagId);
+    public Tag findTagById(int tagId) throws ResourceNotFoundException {
+        Optional<Tag> tagOptional = tagDao.readTag(tagId);
+
+        Tag tag = tagOptional.orElseThrow(() ->
+                new ResourceNotFoundException(String.format(TAG_NOT_FOUND_MESSAGE, tagId)));
 
         return tag;
     }

@@ -3,8 +3,9 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateTagDao;
 import com.epam.esm.dto.CertificateTagsDto;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.SelectParams;
+import com.epam.esm.entity.SelectQueryParameter;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.GiftCertificateTagDtoService;
 import com.epam.esm.service.TagService;
@@ -31,15 +32,14 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int[] addGiftCertificateTagDto(CertificateTagsDto certificateTagsDto) {
+    public int addGiftCertificateTagDto(CertificateTagsDto certificateTagsDto) {
         int certificateId = giftCertificateService.addGiftCertificate(certificateTagsDto.certificate());
 
         tagService.addTags(certificateTagsDto.tags());
 
-        int[] affectedRows = giftCertificateTagDao
-                .createGiftCertificateTagEntries(certificateId, certificateTagsDto.tags());
+        giftCertificateTagDao.createGiftCertificateTagEntries(certificateId, certificateTagsDto.tags());
 
-        return affectedRows;
+        return certificateId;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional
-    public List<CertificateTagsDto> findGiftCertificateTagDtoByParam(SelectParams params) {
+    public List<CertificateTagsDto> findGiftCertificateTagDtoByParam(SelectQueryParameter params) {
         List<GiftCertificate> certificates = giftCertificateService.findCertificatesWithParams(params);
         List<CertificateTagsDto> certificateTagsDtoList = convertCertificateListToCertificateTagsDto(certificates);
 
@@ -62,7 +62,7 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional
-    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) {
+    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) throws ResourceNotFoundException {
         GiftCertificate certificate = giftCertificateService.findCertificateById(certificateId);
         Set<Tag> tags = tagService.findTagsByCertificateId(certificateId);
 
@@ -71,12 +71,13 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto) {
+    public int[] updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto, int id) {
         tagService.addTags(certificateTagsDto.tags());
 
-        int affectedRow = giftCertificateService.updateGiftCertificate(certificateTagsDto.certificate());
+        giftCertificateService.updateGiftCertificate(certificateTagsDto.certificate(), id);
+        int[] affectedRows = giftCertificateTagDao.createGiftCertificateTagEntries(id, certificateTagsDto.tags());
 
-        return affectedRow;
+        return affectedRows;
     }
 
     private List<CertificateTagsDto> convertCertificateListToCertificateTagsDto(List<GiftCertificate> certificates) {

@@ -1,6 +1,6 @@
 package com.epam.esm.entity;
 
-public enum SelectOrder {
+public enum SelectQueryOrder {
     ASC,
     DESC
 }

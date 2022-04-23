@@ -1,7 +1,9 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.SelectParams;
+import com.epam.esm.entity.SelectQueryParameter;
+import com.epam.esm.exception.ResourceNotFoundException;
+
 import java.util.List;
 
 public interface GiftCertificateService {
@@ -9,11 +11,11 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findAllCertificates();
 
-    List<GiftCertificate> findCertificatesWithParams(SelectParams params);
+    List<GiftCertificate> findCertificatesWithParams(SelectQueryParameter params);
 
-    GiftCertificate findCertificateById(int certificateId);
+    GiftCertificate findCertificateById(int certificateId) throws ResourceNotFoundException;
 
-    int updateGiftCertificate(GiftCertificate certificate);
+    int updateGiftCertificate(GiftCertificate certificate, int id);
 
     int deleteCertificate(int certificateId);
 }

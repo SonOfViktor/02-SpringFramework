@@ -1,16 +1,12 @@
 package com.epam.esm.builder;
 
-import com.epam.esm.validator.SelectParameterValidator;
-import com.epam.esm.entity.SelectParams;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.entity.SelectQueryParameter;
 import org.springframework.stereotype.Component;
+
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Component
 public class SelectSqlBuilder {
-    private static final Logger logger = LogManager.getLogger();
     private static final String BEGIN_SELECT_SQL = """
                 SELECT gift_certificate_id, gift_certificate.name, description,
                        price, duration, create_date, last_update_date
@@ -29,7 +25,6 @@ public class SelectSqlBuilder {
     private static final String ORDER_PART_PATTERN = """
                 ORDER BY %s%s%s
             """;
-    private static final String EMPTY_LINE = "";
     private static final String TAG_NAME = "tag.name = ? ";
     private static final String CERTIFICATE_NAME = "gift_certificate.name LIKE ? ";
     private static final String CERTIFICATE_DESCRIPTION = "description LIKE ?";
@@ -38,68 +33,64 @@ public class SelectSqlBuilder {
     private static final String COMMA = ", ";
     private static final String ORDER_NAME = "gift_certificate.name ";
     private static final String ORDER_DATE = "create_date ";
-    SelectParameterValidator validator;
 
-    public String buildSelectGiftCertificateSQL(SelectParams params) {
-        StringBuilder sql = new StringBuilder(BEGIN_SELECT_SQL);
+    public String buildSelectGiftCertificateSQL(SelectQueryParameter params) {
+        StringBuilder querySql = new StringBuilder(BEGIN_SELECT_SQL);
 
-        if (params == null || !validator.isAnyFieldValid(params)) {
-            logger.log(Level.INFO, "Sql request: \n{}", sql);
-            return sql.toString();
+        if (isAllFieldNullOrBlank(params)) {
+            return querySql.toString();
         }
 
-        String tagName = appendJoinPart(sql, params);
-        appendWherePart(sql, params, tagName);
-        appendOrderPart(sql, params);
-
-        logger.log(Level.INFO, "Sql request: \n{}", sql);
-
-        return sql.toString();
-    }
-
-    @Autowired
-    public void setValidator(SelectParameterValidator validator) {
-        this.validator = validator;
-    }
-
-    private String appendJoinPart(StringBuilder sql, SelectParams params) {
-        String tagName = "";
-
-        if (validator.isTagNameValid(params)) {
-            sql.append(SELECT_JOIN_PART);
+        String tagName = EMPTY;
+        if (!isBlank(params.tagName())) {
             tagName = TAG_NAME;
+            querySql.append(SELECT_JOIN_PART);
         }
 
-        return tagName;
+        querySql.append(createQueryWherePart(params, tagName));
+        querySql.append(createQueryOrderPart(params));
+
+        return querySql.toString();
     }
 
-    private void appendWherePart(StringBuilder sql, SelectParams params, String tagName) {
-        String name = validator.isCertificateNameValid(params) ? CERTIFICATE_NAME : EMPTY_LINE;
-        String description = validator.isCertificateDescriptionValid(params) ? CERTIFICATE_DESCRIPTION : EMPTY_LINE;
-        String or = "";
+    private String createQueryWherePart(SelectQueryParameter params, String tagName) {
+        String queryWherePart = EMPTY;
+        String or = EMPTY;
         String pattern = WHERE_PART_PATTERN;
 
-        if(!name.isEmpty() && !description.isEmpty()) {
+        String name = !isBlank(params.certificateName()) ? CERTIFICATE_NAME : EMPTY;
+        String description = !isBlank(params.certificateDescription()) ? CERTIFICATE_DESCRIPTION : EMPTY;
+
+        if(isNoneEmpty(name, description)) {
             or = OR;
             pattern = WHERE_PART_PATTERN_WITH_BRACES;
         }
 
-        String and = (!name.isEmpty() || !description.isEmpty() && !tagName.isEmpty()) ? AND : EMPTY_LINE;
+        String and = (!tagName.isEmpty() && !isAllEmpty(name, description)) ? AND : EMPTY;
 
-        if (!name.isEmpty() || !description.isEmpty() || !tagName.isEmpty()) {
-            String wherePart = String.format(pattern, tagName, and, name, or, description);
-            sql.append(wherePart);
+        if (!isAllEmpty(name, description, tagName)) {
+            queryWherePart = String.format(pattern, tagName, and, name, or, description);
         }
+
+        return queryWherePart;
     }
 
-    private void appendOrderPart(StringBuilder sql, SelectParams params) {
-        String orderName = validator.isOrderNameValid(params) ? ORDER_NAME + params.orderName() : EMPTY_LINE;
-        String orderDate = validator.isOrderDateValid(params) ? ORDER_DATE + params.orderDate() : EMPTY_LINE;
-        String orderComma = (!orderName.isEmpty() && !orderDate.isEmpty()) ? COMMA : EMPTY_LINE;
+    private String createQueryOrderPart(SelectQueryParameter params) {
+        String queryOrderPart = EMPTY;
 
-        if (!orderName.isEmpty() || !orderDate.isEmpty()) {
-            String orderPart = String.format(ORDER_PART_PATTERN, orderName, orderComma, orderDate);
-            sql.append(orderPart);
+        String orderName = params.orderName() != null ? ORDER_NAME + params.orderName() : EMPTY;
+        String orderDate = params.orderDate() != null ? ORDER_DATE + params.orderDate() : EMPTY;
+        String orderComma = (isNoneEmpty(orderName, orderDate)) ? COMMA : EMPTY;
+
+        if (!isAllEmpty(orderName, orderDate)) {
+            queryOrderPart = String.format(ORDER_PART_PATTERN, orderName, orderComma, orderDate);
         }
+
+        return queryOrderPart;
+    }
+
+    private boolean isAllFieldNullOrBlank(SelectQueryParameter params) {
+        return isAllBlank(params.tagName(), params.certificateName(), params.certificateDescription()) &&
+                params.orderName() == null && params.orderDate() == null;
     }
 }

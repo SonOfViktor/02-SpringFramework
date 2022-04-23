@@ -18,7 +18,8 @@ import java.util.Set;
 @Repository
 public class TagDaoImpl implements TagDao {
     private static final String INSERT_TAG_SQL = """
-            INSERT IGNORE INTO tag (name) VALUES (:name)
+            INSERT INTO tag (name) VALUES (:name)
+            ON DUPLICATE KEY UPDATE  name = name
             """;
     private static final String READ_ALL_TAGS_BY_CERTIFICATE_ID = """
             SELECT tag_id, tag.name FROM tag
@@ -71,7 +72,7 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Set<Tag> readAllTag() {
-        List<Tag> tags = jdbcTemplate.queryForList(READ_ALL_TAGS_SQL, Tag.class);
+        List<Tag> tags = jdbcTemplate.query(READ_ALL_TAGS_SQL, new BeanPropertyRowMapper<>(Tag.class));
 
         return Set.copyOf(tags);
     }
@@ -85,8 +86,11 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Tag readTag(int id) {                                                //todo Optional
-        Tag tag = jdbcTemplate.queryForObject(READ_TAG_SQL, Tag.class, id);
+    public Optional<Tag> readTag(int id) {
+        Optional<Tag> tag = jdbcTemplate
+                .query(READ_TAG_SQL, new BeanPropertyRowMapper<>(Tag.class), id)
+                .stream()
+                .findFirst();
 
         return tag;
     }
