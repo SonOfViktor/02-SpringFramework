@@ -2,20 +2,26 @@ package com.epam.esm.aspect;
 
 import com.epam.esm.entity.MethodMetadata;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
 @Aspect
-public class ServiceAspect {
-    private static final Logger logger = LogManager.getLogger();
+public class ServiceLoggingAspect {
+    private final Logger logger;
+
+    @Autowired
+    public ServiceLoggingAspect(Logger logger) {
+        this.logger = logger;
+    }
 
     @Pointcut("execution(int com.epam.esm.service.*..update*(..))")
     public void updateServiceMethodPointcut() {}
@@ -32,15 +38,18 @@ public class ServiceAspect {
     @Pointcut("execution(int[] com.epam.esm.service.*..*(..))")
     public void serviceMethodReturnIntArrayPointcut() {}
 
+    @Pointcut("execution(* com.epam.esm.service.impl.*.*(..))")
+    public void allServiceMethodPointcut() {}
+
     @Pointcut("execution(* com.epam.esm.builder.SelectSqlBuilder.buildSelectGiftCertificateSQL(..))")
     public void buildSelectGiftCertificateSQLPointcut() {}
 
-    @AfterReturning(pointcut = "updateServiceMethodPointcut() && deleteServiceMethodPointcut()")
-    public void logUpdateDeleteServiceMethod(JoinPoint joinPoint) {
+    @AfterReturning(pointcut = "updateServiceMethodPointcut() || deleteServiceMethodPointcut()", returning = "affectedRow")
+    public void logUpdateDeleteServiceMethod(JoinPoint joinPoint, int affectedRow) {
         MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
 
-        logger.log(Level.INFO, "Method {}() from class {} worked successfully",
-                methodMetadata.methodName(), methodMetadata.className());
+        logger.log(Level.INFO, "Method {}() from class {} worked successfully. {} affected row",
+                methodMetadata.methodName(), methodMetadata.className(), affectedRow);
     }
 
     @AfterReturning(pointcut = "findDtoServiceMethodPointcut()", returning = "result")
@@ -72,6 +81,13 @@ public class ServiceAspect {
 
         logger.log(Level.INFO, "Method {}() from class {} returned \n{}",
                 methodMetadata.methodName(), methodMetadata.className(), selectQuerySql);
+    }
+
+    @AfterThrowing(pointcut = "allServiceMethodPointcut()", throwing = "exception")
+    public void logExceptionAllServiceMethod(JoinPoint joinPoint, Exception exception) {
+        MethodMetadata methodMetadata = takeMethodMetadata(joinPoint);
+        logger.log(Level.ERROR, "Method {}() from class {} thrown exception {}",
+                methodMetadata.methodName(), methodMetadata.className(), exception);
     }
 
     private MethodMetadata takeMethodMetadata(JoinPoint joinPoint) {
