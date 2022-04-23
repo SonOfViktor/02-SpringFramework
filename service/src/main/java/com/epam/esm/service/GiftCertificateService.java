@@ -13,7 +13,7 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findCertificatesWithParams(SelectQueryParameter params);
 
-    GiftCertificate findCertificateById(int certificateId) throws ResourceNotFoundException;
+    GiftCertificate findCertificateById(int certificateId);
 
     int updateGiftCertificate(GiftCertificate certificate, int id);
 

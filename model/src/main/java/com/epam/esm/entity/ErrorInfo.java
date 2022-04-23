@@ -1,4 +1,8 @@
 package com.epam.esm.entity;
 
-public record ErrorInfo(String errorMessage, int errorCode) {
+import java.util.Map;
+
+public record ErrorInfo(String errorMessage,
+                        Map<String, String> fieldError,
+                        int errorCode) {
 }

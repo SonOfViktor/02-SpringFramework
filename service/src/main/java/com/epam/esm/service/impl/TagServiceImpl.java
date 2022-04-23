@@ -49,7 +49,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findTagById(int tagId) throws ResourceNotFoundException {
+    public Tag findTagById(int tagId){
         Optional<Tag> tagOptional = tagDao.readTag(tagId);
 
         Tag tag = tagOptional.orElseThrow(() ->
@@ -61,6 +61,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public int deleteTag(int tagId) {
         int affectedRow = tagDao.deleteTag(tagId);
+
+        if (affectedRow == 0) {
+            throw new ResourceNotFoundException("Tag with id " + tagId +
+                    " can't be deleted. It was not found");
+        }
 
         return affectedRow;
     }

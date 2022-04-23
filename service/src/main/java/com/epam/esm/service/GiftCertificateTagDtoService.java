@@ -13,7 +13,7 @@ public interface GiftCertificateTagDtoService {
 
     List<CertificateTagsDto> findGiftCertificateTagDtoByParam(SelectQueryParameter params);
 
-    CertificateTagsDto findGiftCertificateTagDto(int certificateId) throws ResourceNotFoundException;
+    CertificateTagsDto findGiftCertificateTagDto(int certificateId);
 
     int[] updateGiftCertificateTagDto(CertificateTagsDto certificateTagsDto, int id);
 }

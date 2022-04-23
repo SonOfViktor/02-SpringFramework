@@ -62,7 +62,7 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional
-    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) throws ResourceNotFoundException {
+    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) {
         GiftCertificate certificate = giftCertificateService.findCertificateById(certificateId);
         Set<Tag> tags = tagService.findTagsByCertificateId(certificateId);
 

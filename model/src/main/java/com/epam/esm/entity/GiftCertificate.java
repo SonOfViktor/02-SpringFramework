@@ -1,5 +1,6 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.validategroup.ForCreate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.constraints.*;
@@ -8,27 +9,29 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class GiftCertificate {
+    private static final String DATE_JSON_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     private int giftCertificateId;
 
-    @NotNull
+    @NotNull(groups = ForCreate.class)
     @Size(min = 3, max = 45)
     private String name;
 
+    @NotNull(groups = ForCreate.class)
     @Size(max = 500)
     private String description;
 
-    @Positive(message = "{certificate.price.positive}")
+    @Positive
     @Digits(integer = 3, fraction = 2)
     private BigDecimal price;
 
-    @Positive(message = "{certificate.duration.positive}")
+    @Positive
     @Digits(integer = 2, fraction = 0)
     private int duration;
 
-    @Null(message = "Create date is generated automatically")
+    @Null
     private LocalDateTime createDate;
 
-    @Null(message = "Last update date is generated automatically")
+    @Null
     private LocalDateTime lastUpdateDate;
 
     public GiftCertificate() {
@@ -84,7 +87,7 @@ public class GiftCertificate {
         this.duration = duration;
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_JSON_PATTERN)
     public LocalDateTime getCreateDate() {
         return createDate;
     }
@@ -93,7 +96,7 @@ public class GiftCertificate {
         this.createDate = createDate;
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_JSON_PATTERN)
     public LocalDateTime getLastUpdateDate() {
         return lastUpdateDate;
     }

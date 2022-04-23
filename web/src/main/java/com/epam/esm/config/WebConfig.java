@@ -1,9 +1,6 @@
 package com.epam.esm.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -13,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
@@ -22,7 +18,7 @@ import java.util.Locale;
 @EnableWebMvc
 @Profile("prod")
 public class WebConfig implements WebMvcConfigurer {
-    private static final String ERROR_MESSAGE_LOCALE_BUNDLE = "classpath:property/error_message";      //todo replace classpath on /
+    private static final String ERROR_MESSAGE_LOCALE_BUNDLE = "classpath:locale/error_message";
     private static final String CHANGE_LOCALE_PARAMETER = "lang";
 
     @Bean
@@ -60,9 +56,9 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
-    //    @Override
-//    public Validator getValidator()
-//    {
-//        return validator();
-//    }
+
+    @Override
+    public Validator getValidator() {
+        return validator();
+    }
 }

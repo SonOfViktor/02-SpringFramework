@@ -14,7 +14,7 @@ public interface TagService {
 
     Set<Tag> findTagsByCertificateId(int certificateId);
 
-    Tag findTagById(int tagId) throws ResourceNotFoundException;
+    Tag findTagById(int tagId);
 
     int deleteTag(int tagId);
 }
