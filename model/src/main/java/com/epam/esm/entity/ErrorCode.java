@@ -10,13 +10,13 @@ public enum ErrorCode {
     NO_HANDLER_FOUND(40430),
     COMMON_ERROR(40099);
 
-    int errorCode;
+    int code;
 
-    ErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    ErrorCode(int code) {
+        this.code = code;
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public int getCode() {
+        return code;
     }
 }

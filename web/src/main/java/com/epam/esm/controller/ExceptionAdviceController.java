@@ -42,7 +42,7 @@ public class ExceptionAdviceController {
     public ResponseEntity<ErrorInfo> resourceNotFoundExceptionHandler(ResourceNotFoundException ex, Locale locale) {
         String errorMessage = messageSource.getMessage(RESOURCE_NOT_FOUND, null, locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex),
-                ErrorCode.RESOURCE_NOT_FOUND.getErrorCode());
+                ErrorCode.RESOURCE_NOT_FOUND.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.NOT_FOUND);
     }
@@ -52,7 +52,7 @@ public class ExceptionAdviceController {
         String errorMessage = messageSource
                 .getMessage(TYPE_MISMATCH, new Object[]{ex.getRequiredType(), ex.getValue()}, locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex),
-                ErrorCode.TYPE_MISMATCH.getErrorCode());
+                ErrorCode.TYPE_MISMATCH.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
@@ -62,7 +62,7 @@ public class ExceptionAdviceController {
             (HttpMessageNotReadableException ex, Locale locale) {
         String errorMessage = messageSource.getMessage(JSON_CONVERSION_FAILURE, null, locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex),
-                ErrorCode.HTTP_MESSAGE_NOT_READABLE.getErrorCode());
+                ErrorCode.HTTP_MESSAGE_NOT_READABLE.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
@@ -72,7 +72,7 @@ public class ExceptionAdviceController {
             (MethodArgumentNotValidException ex, Locale locale) {
         String errorMessage = messageSource.getMessage(ARGUMENT_NOT_VALID, new Object[]{ex.getFieldErrorCount()}, locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex, locale),
-                ErrorCode.METHOD_ARGUMENT_NOT_VALID.getErrorCode());
+                ErrorCode.METHOD_ARGUMENT_NOT_VALID.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
@@ -82,7 +82,7 @@ public class ExceptionAdviceController {
         String errorMessage = messageSource
                 .getMessage(METHOD_PARAMETER_NOT_VALID, takeArgsForMethodParameterNotValidCode(ex), locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex),
-                ErrorCode.PATH_VARIABLE_NOT_VALID.getErrorCode());
+                ErrorCode.PATH_VARIABLE_NOT_VALID.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
@@ -93,7 +93,7 @@ public class ExceptionAdviceController {
         String errorMessage = messageSource
                 .getMessage(UNSUPPORTED_METHOD, new Object[]{ex.getMethod(), ex.getSupportedHttpMethods()}, locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex),
-                ErrorCode.HTTP_REQUEST_METHOD_NOT_SUPPORTED.getErrorCode());
+                ErrorCode.HTTP_REQUEST_METHOD_NOT_SUPPORTED.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.METHOD_NOT_ALLOWED);
     }
@@ -102,7 +102,7 @@ public class ExceptionAdviceController {
     public ResponseEntity<ErrorInfo> noHandlerFoundExceptionHandler (NoHandlerFoundException ex, Locale locale) {
         String errorMessage = messageSource.getMessage(INVALID_URL, null, locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex),
-                ErrorCode.NO_HANDLER_FOUND.getErrorCode());
+                ErrorCode.NO_HANDLER_FOUND.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.NOT_FOUND);
     }
@@ -111,7 +111,7 @@ public class ExceptionAdviceController {
     public ResponseEntity<ErrorInfo> commonExceptionHandler(Exception ex, Locale locale) {
         String errorMessage = messageSource.getMessage(GLOBAL_EXCEPTION, null, locale);
         ErrorInfo errorInfo = new ErrorInfo(errorMessage, makeClarifiedDataMap(ex),
-                ErrorCode.COMMON_ERROR.getErrorCode());
+                ErrorCode.COMMON_ERROR.getCode());
 
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
