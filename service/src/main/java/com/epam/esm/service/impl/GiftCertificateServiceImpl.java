@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
-    private static final String CERTIFICATE_NOT_FOUND_MESSAGE = "There is no certificate with Id %s in database";
     private static final String NAME_DESCRIPTION_PATTERN = "%%%s%%";
     private GiftCertificateDao giftCertificateDao;
     private SelectSqlBuilder builder;
@@ -47,15 +46,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
         List<GiftCertificate> certificates = giftCertificateDao.readGiftCertificateWithParam(findCertificatesSql, args);
 
+        if(certificates.isEmpty()) {
+            throw new ResourceNotFoundException("There is no certificates with such parameters " + params +
+                    " in database");
+        }
+
         return certificates;
     }
 
     @Override
-    public GiftCertificate findCertificateById(int certificateId) throws ResourceNotFoundException {
+    public GiftCertificate findCertificateById(int certificateId) {
         Optional<GiftCertificate> certificateOptional = giftCertificateDao.readGiftCertificate(certificateId);
 
         GiftCertificate certificate = certificateOptional.orElseThrow(() ->
-                new ResourceNotFoundException(String.format(CERTIFICATE_NOT_FOUND_MESSAGE, certificateId)));
+                new ResourceNotFoundException("There is no certificate with Id" + certificateId + " in database"));
 
         return certificate;
     }
@@ -65,12 +69,22 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificate.setGiftCertificateId(id);
         int affectedRow = giftCertificateDao.updateGiftCertificate(certificate);
 
+        if (affectedRow == 0) {
+            throw new ResourceNotFoundException("Certificate with id " + id +
+                    " can't be updated. It was not found");
+        }
+
         return affectedRow;
     }
 
     @Override
-    public int deleteCertificate(int certificateId) {
-        int affectedRow = giftCertificateDao.deleteGiftCertificate(certificateId);
+    public int deleteCertificate(int id) {
+        int affectedRow = giftCertificateDao.deleteGiftCertificate(id);
+
+        if (affectedRow == 0) {
+            throw new ResourceNotFoundException("Certificate with id " + id +
+                    " can't be deleted. It was not found");
+        }
 
         return affectedRow;
     }

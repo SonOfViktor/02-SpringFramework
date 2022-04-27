@@ -5,22 +5,20 @@ import com.epam.esm.dto.CertificateTagsDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.SelectQueryParameter;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.GiftCertificateTagDtoService;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoService {
-    GiftCertificateTagDao giftCertificateTagDao;
-    GiftCertificateService giftCertificateService;
-    TagService tagService;
+    private GiftCertificateTagDao giftCertificateTagDao;
+    private GiftCertificateService giftCertificateService;
+    private TagService tagService;
 
     @Autowired
     public GiftCertificateTagDtoServiceImpl(GiftCertificateTagDao giftCertificateTagDao,
@@ -62,7 +60,7 @@ public class GiftCertificateTagDtoServiceImpl implements GiftCertificateTagDtoSe
 
     @Override
     @Transactional
-    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) throws ResourceNotFoundException {
+    public CertificateTagsDto findGiftCertificateTagDto(int certificateId) {
         GiftCertificate certificate = giftCertificateService.findCertificateById(certificateId);
         Set<Tag> tags = tagService.findTagsByCertificateId(certificateId);
 

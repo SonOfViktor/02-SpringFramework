@@ -7,4 +7,5 @@ import org.springframework.context.annotation.*;
 @EnableAspectJAutoProxy
 @Profile("prod")
 public class LogConfig {
+
 }

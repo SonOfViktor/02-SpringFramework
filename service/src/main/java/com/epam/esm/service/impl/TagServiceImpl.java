@@ -6,13 +6,11 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class TagServiceImpl implements TagService {
-    private static final String TAG_NOT_FOUND_MESSAGE = "There is no tag with Id %s in database";
     private TagDao tagDao;
 
     @Autowired
@@ -23,6 +21,10 @@ public class TagServiceImpl implements TagService {
     @Override
     public int addTag(Tag tag) {
         int tagId = tagDao.createTag(tag);
+
+        if (tagId == 0) {
+            throw new ResourceNotFoundException("Tag with name " + tag.getName() + " has already existed");
+        }
 
         return tagId;
     }
@@ -49,11 +51,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findTagById(int tagId) throws ResourceNotFoundException {
+    public Tag findTagById(int tagId){
         Optional<Tag> tagOptional = tagDao.readTag(tagId);
 
         Tag tag = tagOptional.orElseThrow(() ->
-                new ResourceNotFoundException(String.format(TAG_NOT_FOUND_MESSAGE, tagId)));
+                new ResourceNotFoundException("Tag with id " + tagId + " wasn't found"));
 
         return tag;
     }
@@ -61,6 +63,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public int deleteTag(int tagId) {
         int affectedRow = tagDao.deleteTag(tagId);
+
+        if (affectedRow == 0) {
+            throw new ResourceNotFoundException("Tag with id " + tagId +
+                    " can't be deleted. It was not found");
+        }
 
         return affectedRow;
     }

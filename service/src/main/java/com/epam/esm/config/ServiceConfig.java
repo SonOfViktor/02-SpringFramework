@@ -11,10 +11,8 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @ComponentScan("com.epam.esm")
 @Profile("prod")
-@Import({DaoConfig.class, LogConfig.class})
-
+@Import(DaoConfig.class)
 public class ServiceConfig {
-
     private DataSource dataSource;
 
     @Autowired
